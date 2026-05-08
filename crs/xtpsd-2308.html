@@ -1,245 +1,540 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalle de CR - XTPSD-2308</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #2563eb;
-            --bg-body: #f8fafc;
-            --text-main: #1e293b;
-            --card-bg: #ffffff;
-            --border: #e2e8f0;
-            --success: #22c55e;
-            --danger: #ef4444;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            margin: 0;
-            padding: 2rem;
-        }
+  <title>XTPSD-2308 · CR Analytics</title>
 
-        .container {
-            max-width: 1100px;
-            margin: auto;
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-        .header {
-            margin-bottom: 2rem;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 1rem;
-        }
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 
-        .header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        .header p {
-            color: #64748b;
-            margin: 0.5rem 0 0;
-        }
+    :root {
+      --bg-body: #f8fafc;
+      --surface: #ffffff;
+      --primary: #2563eb;
+      --primary-light: #dbeafe;
+      
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
 
-        /* Grid de KPIs */
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
-        }
+      --text-main: #1e293b;
+      --text-secondary: #64748b;
+      --text-tertiary: #94a3b8;
 
-        .kpi-card {
-            background: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            border: 1px solid var(--border);
-        }
+      --red-bg: #fef2f2;
+      --red-text: #ef4444;
+      --red-border: #fecaca;
 
-        .kpi-label {
-            font-size: 0.875rem;
-            color: #64748b;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
+      --green-bg: #f0fdf4;
+      --green-text: #22c55e;
+      --green-border: #bbf7d0;
 
-        .kpi-value {
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
+      --amber-bg: #fffbeb;
+      --amber-text: #d97706;
+      --amber-border: #fef3c7;
 
-        .deviation-tag {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--danger);
-        }
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      --radius: 12px;
+      --font: 'Inter', sans-serif;
+    }
 
-        /* Layout de Gráficos y Tabla */
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr;
-            gap: 2rem;
-            align-items: start;
-        }
+    body {
+      font-family: var(--font);
+      background: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.5;
+    }
 
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 1.5rem;
-            border: 1px solid var(--border);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
+    /* NAV */
+    nav {
+      height: 60px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
 
-        .card-title {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            color: #475569;
-        }
+    .nav-logo {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+    }
 
-        /* Tabla de Roles */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
+    .nav-sep {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+    }
 
-        th {
-            text-align: left;
-            padding: 1rem;
-            background: #f1f5f9;
-            color: #475569;
-            font-weight: 600;
-        }
+    .nav-section {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
 
-        td {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border);
-        }
+    /* LAYOUT */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px 72px;
+    }
 
-        .positive { color: var(--danger); font-weight: 600; }
-        .negative { color: var(--success); font-weight: 600; }
+    /* BREADCRUMB */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: var(--text-tertiary);
+    }
 
-        @media (max-width: 900px) {
-            .main-content { grid-template-columns: 1fr; }
-        }
-    </style>
+    .breadcrumb a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--primary);
+    }
+
+    /* HEADER */
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .cr-id {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      color: var(--text-main);
+    }
+
+    .page-sub {
+      font-size: 15px;
+      color: var(--text-secondary);
+      max-width: 800px;
+    }
+
+    .header-chips {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .chip {
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      background: #f1f5f9;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .chip.over {
+      background: var(--red-bg);
+      border-color: var(--red-border);
+      color: var(--red-text);
+    }
+
+    /* KPI GRID */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .kpi-card.highlight {
+      border-left: 4px solid var(--red-text);
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .kpi-value span {
+      font-size: 14px;
+      color: var(--text-tertiary);
+    }
+
+    .kpi-value.over {
+      color: var(--red-text);
+    }
+
+    .kpi-sub {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* SECTION */
+    .section {
+      margin-top: 40px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    /* TABLE */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      background: #f1f5f9;
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-align: right;
+      border-bottom: 1px solid var(--border);
+    }
+
+    thead th:first-child { text-align: left; }
+
+    tbody td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      text-align: right;
+      font-size: 14px;
+    }
+
+    tbody td:first-child {
+      text-align: left;
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    .positive { color: var(--red-text); font-weight: 600; }
+    .negative { color: var(--green-text); font-weight: 600; }
+
+    .badge {
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge-over { background: var(--red-bg); color: var(--red-text); }
+    .badge-under { background: var(--green-bg); color: var(--green-text); }
+    .badge-neutral { background: var(--amber-bg); color: var(--amber-text); }
+
+    .total-row {
+      background: #f8fafc;
+      font-weight: 700;
+    }
+
+    /* CHARTS */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .chart-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .chart-wrap {
+      height: 280px;
+    }
+
+    @media (max-width: 900px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .charts-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1>XTPSD-2308: WB — Configuración B2C por empresa</h1>
-        <p>Análisis detallado de esfuerzo y desvíos por disciplina</p>
+  <nav>
+    <span class="nav-logo">PMO PORTAL</span>
+    <div class="nav-sep"></div>
+    <span class="nav-section">CR Analytics</span>
+  </nav>
+
+  <main>
+
+    <div class="breadcrumb">
+      <a href="#">Dashboard</a>
+      <span>/</span>
+      <a href="#">CR Analytics</a>
+      <span>/</span>
+      <span style="color: var(--text-main)">XTPSD-2308</span>
     </div>
 
-    <!-- KPIs Superiores -->
+    <div class="page-header">
+      <div class="cr-id">XTPSD-2308</div>
+      <h1 class="page-title">
+        WB — Configuración B2C por empresa + Subdominio B2C Travelclub
+      </h1>
+      <div class="page-sub">
+        Análisis comparativo entre esfuerzo estimado y real ejecutado por rol. Identificación de patrones de desvío y mejora en estimaciones.
+      </div>
+      <div class="header-chips">
+        <span class="chip">Finalizado</span>
+        <span class="chip">WB</span>
+        <span class="chip over">+14.5% desvío</span>
+      </div>
+    </div>
+
     <div class="kpi-grid">
-        <div class="kpi-card">
-            <span class="kpi-label">Estado Actual</span>
-            <span class="kpi-value">Finalizado</span>
-        </div>
-        <div class="kpi-card">
-            <span class="kpi-label">Horas Estimadas</span>
-            <span class="kpi-value">72.9 hs</span>
-        </div>
-        <div class="kpi-card">
-            <span class="kpi-label">Horas Reales</span>
-            <span class="kpi-value">83.5 hs</span>
-        </div>
-        <div class="kpi-card">
-            <span class="kpi-label">Desvío Global</span>
-            <span class="kpi-value deviation-tag">+14.5%</span>
-        </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Horas estimadas</div>
+        <div class="kpi-value">72.9 <span>hs</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Horas reales</div>
+        <div class="kpi-value">83.5 <span>hs</span></div>
+      </div>
+      <div class="kpi-card highlight">
+        <div class="kpi-label">Desvío total</div>
+        <div class="kpi-value over">+10.6 <span>hs</span></div>
+        <div class="kpi-sub">+14.5% sobre estimado</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Roles involucrados</div>
+        <div class="kpi-value">8</div>
+      </div>
     </div>
 
-    <div class="main-content">
-        <!-- Gráfico Comparativo -->
-        <div class="card">
-            <div class="card-title">Estimado vs. Real por Rol</div>
-            <canvas id="rolesChart"></canvas>
-        </div>
+    <section class="section">
+      <div class="section-title">Desglose por rol operativo</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Rol</th>
+              <th>Estimado</th>
+              <th>Real</th>
+              <th>Desvío</th>
+              <th>Desvío %</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Backend</td>
+              <td>32.0 hs</td>
+              <td>48.0 hs</td>
+              <td class="positive">+16.0 hs</td>
+              <td class="positive">+50.0%</td>
+              <td><span class="badge badge-over">Excedido</span></td>
+            </tr>
+            <tr>
+              <td>Frontend</td>
+              <td>16.0 hs</td>
+              <td>23.0 hs</td>
+              <td class="positive">+7.0 hs</td>
+              <td class="positive">+43.8%</td>
+              <td><span class="badge badge-over">Excedido</span></td>
+            </tr>
+            <tr>
+              <td>UX/UI</td>
+              <td>2.4 hs</td>
+              <td>0.0 hs</td>
+              <td class="negative">−2.4 hs</td>
+              <td class="negative">−100%</td>
+              <td><span class="badge badge-under">Bajo</span></td>
+            </tr>
+            <tr>
+              <td>QA</td>
+              <td>4.5 hs</td>
+              <td>0.0 hs</td>
+              <td class="negative">−4.5 hs</td>
+              <td class="negative">−100%</td>
+              <td><span class="badge badge-under">Bajo</span></td>
+            </tr>
+            <tr>
+              <td>Automation</td>
+              <td>2.0 hs</td>
+              <td>1.0 hs</td>
+              <td class="negative">−1.0 hs</td>
+              <td class="negative">−50%</td>
+              <td><span class="badge badge-under">Bajo</span></td>
+            </tr>
+            <tr>
+              <td>DevOps</td>
+              <td>11.0 hs</td>
+              <td>2.0 hs</td>
+              <td class="negative">−9.0 hs</td>
+              <td class="negative">−81.8%</td>
+              <td><span class="badge badge-under">Bajo</span></td>
+            </tr>
+            <tr>
+              <td>Análisis</td>
+              <td>3.1 hs</td>
+              <td>8.0 hs</td>
+              <td class="positive">+4.9 hs</td>
+              <td class="positive">+158.1%</td>
+              <td><span class="badge badge-over">Excedido</span></td>
+            </tr>
+            <tr>
+              <td>Arquitectura</td>
+              <td>1.9 hs</td>
+              <td>1.5 hs</td>
+              <td class="negative">−0.4 hs</td>
+              <td class="negative">−21.1%</td>
+              <td><span class="badge badge-neutral">Leve</span></td>
+            </tr>
+            <tr class="total-row">
+              <td>TOTAL</td>
+              <td>72.9 hs</td>
+              <td>83.5 hs</td>
+              <td class="positive">+10.6 hs</td>
+              <td class="positive">+14.5%</td>
+              <td><span class="badge badge-over">Excedido</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
-        <!-- Tabla de Datos -->
-        <div class="card">
-            <div class="card-title">Desglose de Esfuerzo</div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Rol</th>
-                        <th>Estimado</th>
-                        <th>Real</th>
-                        <th>Desvío (hs)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Backend</td>
-                        <td>32.0</td>
-                        <td>48.0</td>
-                        <td class="positive">+16.0</td>
-                    </tr>
-                    <tr>
-                        <td>Frontend</td>
-                        <td>16.0</td>
-                        <td>23.0</td>
-                        <td class="positive">+7.0</td>
-                    </tr>
-                    <tr>
-                        <td>Análisis</td>
-                        <td>3.1</td>
-                        <td>8.0</td>
-                        <td class="positive">+4.9</td>
-                    </tr>
-                    <tr>
-                        <td>DevOps</td>
-                        <td>13.8</td>
-                        <td>4.5</td>
-                        <td class="negative">-9.3</td>
-                    </tr>
-                </tbody>
-            </table>
+    <section class="section">
+      <div class="section-title">Visualización ejecutiva</div>
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">Estimado vs Real por rol</div>
+          <div class="chart-wrap">
+            <canvas id="chart1"></canvas>
+          </div>
         </div>
-    </div>
-</div>
+        <div class="chart-card">
+          <div class="chart-title">Desvío absoluto por rol</div>
+          <div class="chart-wrap">
+            <canvas id="chart2"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<script>
-    const ctx = document.getElementById('rolesChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Backend', 'Frontend', 'Análisis', 'DevOps'],
-            datasets: [
-                {
-                    label: 'Estimado',
-                    data: [32, 16, 3.1, 13.8],
-                    backgroundColor: '#cbd5e1'
-                },
-                {
-                    label: 'Real',
-                    data: [48, 23, 8, 4.5],
-                    backgroundColor: '#2563eb'
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { position: 'bottom' }
-            },
-            scales: {
-                y: { beginAtZero: true }
-            }
+  </main>
+
+  <script>
+    const roles = ['Backend', 'Frontend', 'UX/UI', 'QA', 'Automation', 'DevOps', 'Análisis', 'Arquitectura'];
+    const estimated = [32, 16, 2.4, 4.5, 2, 11, 3.1, 1.9];
+    const real = [48, 23, 0, 0, 1, 2, 8, 1.5];
+    const variance = real.map((r, i) => +(r - estimated[i]).toFixed(1));
+
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.color = "#64748b";
+
+    new Chart(document.getElementById('chart1'), {
+      type: 'bar',
+      data: {
+        labels: roles,
+        datasets: [
+          { label: 'Estimado', data: estimated, backgroundColor: '#cbd5e1', borderRadius: 4 },
+          { label: 'Real', data: real, backgroundColor: '#2563eb', borderRadius: 4 }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } },
+        scales: {
+          y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+          x: { grid: { display: false } }
         }
+      }
     });
-</script>
+
+    new Chart(document.getElementById('chart2'), {
+      type: 'bar',
+      data: {
+        labels: roles,
+        datasets: [{
+          label: 'Desvío (hs)',
+          data: variance,
+          backgroundColor: variance.map(v => v > 0 ? '#ef4444' : '#22c55e'),
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { grid: { color: '#f1f5f9' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  </script>
 
 </body>
 </html>
