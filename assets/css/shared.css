@@ -1,46 +1,46 @@
 /* =========================================================
-   SHARED — PMO Dashboard
+   SHARED — PMO Dashboard  |  X CALE TECH
    Tokens, reset, nav, breadcrumb.
-   Importado por todas las páginas.
    ========================================================= */
 
 /* 1. TOKENS */
 :root {
-  /* Colores base */
   --bg: #f5f4f0;
   --surface: #ffffff;
   --accent: #2563eb;
   --accent-light: #eff6ff;
 
-  /* Bordes */
   --border: rgba(0, 0, 0, 0.08);
   --border-strong: rgba(0, 0, 0, 0.14);
 
-  /* Tipografía */
   --text-primary: #111827;
   --text-secondary: #4b5563;
   --text-tertiary: #9ca3af;
 
-  /* Semántica — excedido */
   --red-bg: #fef2f2;
   --red-text: #b91c1c;
   --red-border: #f87171;
 
-  /* Semántica — bajo estimado */
   --green-bg: #f0fdf4;
   --green-text: #15803d;
   --green-border: #4ade80;
 
-  /* Semántica — leve */
   --amber-bg: #fffbeb;
   --amber-text: #d97706;
   --amber-border: #fcd34d;
 
-  /* Miscelánea */
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
   --radius: 12px;
   --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --mono: 'IBM Plex Mono', 'SF Mono', 'Monaco', monospace;
+
+  /* Nav dark */
+  --nav-bg: #111110;
+  --nav-border: rgba(255, 255, 255, 0.07);
+  --nav-sep: rgba(255, 255, 255, 0.12);
+  --nav-text-dim: rgba(255, 255, 255, 0.45);
+  --nav-text: rgba(255, 255, 255, 0.75);
+  --nav-text-active: rgba(255, 255, 255, 0.95);
 }
 
 /* 2. RESET */
@@ -59,59 +59,109 @@ body {
   min-height: 100vh;
 }
 
-/* 4. NAV */
+/* ─────────────────────────────────────────
+   4. NAV  —  dark, logo-first
+   ───────────────────────────────────────── */
 nav {
-  height: 56px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
+  height: 68px;
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--nav-border);
   display: flex;
   align-items: center;
-  gap: 14px;
   padding: 0 32px;
   position: sticky;
   top: 0;
   z-index: 100;
+  gap: 0;
 }
 
-.nav-logo {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
+/* Logo container */
+.nav-brand {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding-right: 28px;
+  margin-right: 24px;
+  border-right: 1px solid var(--nav-sep);
 }
 
+.nav-logo-img {
+  height: 38px;
+  width: auto;
+  display: block;
+  /* Invierte el logo: píldora negra → blanca, bg blanco → negro (se funde con nav) */
+  filter: invert(1);
+}
+
+/* Separadores y secciones */
 .nav-sep {
   width: 1px;
-  height: 14px;
-  background: var(--border-strong);
+  height: 16px;
+  background: var(--nav-sep);
   flex-shrink: 0;
+  margin: 0 18px;
 }
 
 .nav-section {
   font-size: 13px;
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--nav-text);
+  white-space: nowrap;
 }
 
-/* 5. BREADCRUMB */
+/* Última sección = active, más brillante */
+.nav-section:last-of-type {
+  color: var(--nav-text-active);
+}
+
+/* Dot de acento azul en la última sección */
+.nav-section:last-of-type::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+}
+
+/* En páginas raíz (solo una sección) no mostrar el dot */
+.nav-section:only-of-type::before {
+  display: none;
+}
+
+/* ─────────────────────────────────────────
+   5. BREADCRUMB (dentro de main)
+   ───────────────────────────────────────── */
 .breadcrumb {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 24px;
-  font-size: 13px;
+  gap: 6px;
+  margin-bottom: 28px;
+  font-size: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 14px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
 
 .breadcrumb a {
   color: var(--text-secondary);
   text-decoration: none;
+  font-weight: 500;
   transition: color 0.15s ease;
 }
 
 .breadcrumb a:hover { color: var(--accent); }
 
-.breadcrumb-sep { color: var(--text-tertiary); }
+.breadcrumb-sep {
+  color: var(--text-tertiary);
+  font-size: 10px;
+}
 
 .breadcrumb-current {
   color: var(--text-primary);
