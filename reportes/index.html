@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>CR Analytics</title>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f5f4f0;
+      --surface: #ffffff;
+
+      --border: rgba(0, 0, 0, 0.08);
+      --border-strong: rgba(0, 0, 0, 0.16);
+
+      --text-primary: #1a1a18;
+      --text-secondary: #5f5e5a;
+      --text-tertiary: #9a9890;
+
+      --red-bg: #FCEBEB;
+      --red-text: #A32D2D;
+      --red-border: #E24B4A;
+
+      --green-bg: #EAF3DE;
+      --green-text: #3B6D11;
+      --green-border: #639922;
+
+      --shadow:
+        0 1px 2px rgba(0,0,0,0.03),
+        0 3px 12px rgba(0,0,0,0.04);
+
+      --radius: 12px;
+
+      --mono: 'SF Mono', 'Monaco', monospace;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* NAV */
+
+    nav {
+      height: 52px;
+      background: var(--surface);
+
+      border-bottom: 0.5px solid var(--border);
+
+      display: flex;
+      align-items: center;
+      gap: 14px;
+
+      padding: 0 32px;
+
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .nav-logo {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav-sep {
+      width: 1px;
+      height: 14px;
+      background: var(--border-strong);
+    }
+
+    .nav-section {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* LAYOUT */
+
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    /* BREADCRUMB */
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      margin-bottom: 24px;
+
+      font-size: 13px;
+    }
+
+    .breadcrumb a {
+      color: var(--text-secondary);
+      text-decoration: none;
+
+      transition: color 0.15s ease;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--text-primary);
+    }
+
+    .breadcrumb-sep {
+      color: var(--text-tertiary);
+    }
+
+    .breadcrumb-current {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* PAGE HEADER */
+
+    .page-header {
+      margin-bottom: 28px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 650;
+
+      margin-bottom: 8px;
+
+      letter-spacing: -0.03em;
+    }
+
+    .page-sub {
+      font-size: 14px;
+      line-height: 1.7;
+
+      color: var(--text-secondary);
+
+      max-width: 720px;
+    }
+
+    /* GRID */
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 14px;
+    }
+
+    /* CARD */
+
+    .cr-card {
+      background: var(--surface);
+
+      border: 0.5px solid var(--border);
+
+      border-left: 3px solid var(--red-border);
+
+      border-radius: var(--radius);
+
+      padding: 16px 18px;
+
+      box-shadow: var(--shadow);
+
+      transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+
+      text-decoration: none;
+
+      color: inherit;
+
+      display: block;
+
+      cursor: pointer;
+    }
+
+    .cr-card:hover {
+      transform: translateY(-1px);
+
+      box-shadow:
+        0 2px 6px rgba(0,0,0,0.04),
+        0 8px 20px rgba(0,0,0,0.05);
+    }
+
+    .cr-card.under {
+      border-left-color: var(--green-border);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      margin-bottom: 12px;
+    }
+
+    .card-id {
+      font-size: 11px;
+      font-family: var(--mono);
+
+      color: var(--text-tertiary);
+
+      letter-spacing: 0.03em;
+    }
+
+    .card-badge {
+      margin-left: auto;
+
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+
+      font-size: 11px;
+      font-weight: 500;
+
+      padding: 3px 9px;
+
+      border-radius: 999px;
+    }
+
+    .badge-over {
+      background: var(--red-bg);
+      color: var(--red-text);
+    }
+
+    .badge-under {
+      background: var(--green-bg);
+      color: var(--green-text);
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 500;
+
+      line-height: 1.5;
+
+      margin-bottom: 14px;
+
+      color: var(--text-primary);
+    }
+
+    .card-sep {
+      height: 1px;
+      background: var(--border);
+
+      margin-bottom: 12px;
+    }
+
+    .card-metrics {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 12px;
+    }
+
+    .metric {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .metric-val {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .metric-val.over {
+      color: var(--red-text);
+    }
+
+    .metric-lbl {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    .metric-divider {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+    }
+
+    .delta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+
+      padding: 5px 10px;
+
+      border-radius: 999px;
+
+      font-size: 12px;
+      font-weight: 600;
+
+      white-space: nowrap;
+    }
+
+    .delta-over {
+      background: var(--red-bg);
+      color: var(--red-text);
+    }
+
+    .delta-under {
+      background: var(--green-bg);
+      color: var(--green-text);
+    }
+
+    /* EMPTY CARD */
+
+    .card-empty {
+      min-height: 132px;
+
+      border: 1px dashed var(--border-strong);
+
+      border-radius: var(--radius);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: var(--text-tertiary);
+
+      font-size: 13px;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 640px) {
+
+      nav {
+        padding: 0 18px;
+      }
+
+      main {
+        padding: 24px 18px 48px;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <nav>
+
+    <span class="nav-logo">
+      PMO Analytics
+    </span>
+
+    <div class="nav-sep"></div>
+
+    <span class="nav-section">
+      CR Analytics
+    </span>
+
+  </nav>
+
+  <main>
+
+    <div class="breadcrumb">
+
+      <a href="../../index.html">
+        PMO Analytics
+      </a>
+
+      <span class="breadcrumb-sep">
+        /
+      </span>
+
+      <span class="breadcrumb-current">
+        CR Analytics
+      </span>
+
+    </div>
+
+    <div class="page-header">
+
+      <div class="page-title">
+        CR Analytics
+      </div>
+
+      <div class="page-sub">
+        Análisis comparativo entre horas estimadas y reales
+        por Change Request finalizado, incluyendo métricas
+        operativas y desvíos de ejecución.
+      </div>
+
+    </div>
+
+    <div class="cards-grid">
+
+      <a class="cr-card" href="xtpsd-2308.html">
+
+        <div class="card-header">
+
+          <span class="card-id">
+            XTPSD-2308
+          </span>
+
+          <span class="card-badge badge-over">
+            ↑ Excedido
+          </span>
+
+        </div>
+
+        <div class="card-title">
+          WB — Configuración B2C por empresa + Subdominio B2C Travelclub
+        </div>
+
+        <div class="card-sep"></div>
+
+        <div class="card-metrics">
+
+          <div class="metric">
+
+            <span class="metric-val over">
+              83.5 hs
+            </span>
+
+            <span class="metric-lbl">
+              Real
+            </span>
+
+          </div>
+
+          <div class="metric-divider"></div>
+
+          <div class="metric">
+
+            <span class="metric-val">
+              72.9 hs
+            </span>
+
+            <span class="metric-lbl">
+              Estimado
+            </span>
+
+          </div>
+
+          <div class="metric-divider"></div>
+
+          <span class="delta-chip delta-over">
+            ↑ +10.6 hs · 14.5%
+          </span>
+
+        </div>
+
+      </a>
+
+      <div class="card-empty">
+        Próximo CR
+      </div>
+
+      <div class="card-empty">
+        Próximo CR
+      </div>
+
+    </div>
+
+  </main>
+
+</body>
+
+</html>

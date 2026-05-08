@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>XTPSD-2308 · CR Analytics</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f5f4f0;
+      --surface: #ffffff;
+
+      --border: rgba(0, 0, 0, 0.08);
+      --border-strong: rgba(0, 0, 0, 0.16);
+
+      --text-primary: #1a1a18;
+      --text-secondary: #5f5e5a;
+      --text-tertiary: #9a9890;
+
+      --red-bg: #FCEBEB;
+      --red-text: #A32D2D;
+      --red-border: #E24B4A;
+
+      --green-bg: #EAF3DE;
+      --green-text: #3B6D11;
+      --green-border: #639922;
+
+      --amber-bg: #FFF7E6;
+      --amber-text: #9A6700;
+      --amber-border: #F2D28B;
+
+      --blue-bg: #EEF4FF;
+      --blue-text: #315EAF;
+
+      --shadow:
+        0 1px 2px rgba(0, 0, 0, 0.03),
+        0 3px 12px rgba(0, 0, 0, 0.04);
+
+      --radius: 12px;
+
+      --mono: 'IBM Plex Mono', monospace;
+      --font: 'IBM Plex Sans', sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* NAV */
+
+    nav {
+      height: 52px;
+      background: var(--surface);
+
+      border-bottom: 0.5px solid var(--border);
+
+      display: flex;
+      align-items: center;
+      gap: 14px;
+
+      padding: 0 32px;
+
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .nav-logo {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav-sep {
+      width: 1px;
+      height: 14px;
+      background: var(--border-strong);
+    }
+
+    .nav-section {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* LAYOUT */
+
+    main {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 32px 24px 72px;
+    }
+
+    /* BREADCRUMB */
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      margin-bottom: 18px;
+
+      font-size: 12px;
+      color: var(--text-tertiary);
+
+      font-family: var(--mono);
+    }
+
+    .breadcrumb a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--text-primary);
+    }
+
+    /* HEADER */
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+
+      margin-bottom: 28px;
+    }
+
+    .header-left {
+      max-width: 720px;
+    }
+
+    .cr-id {
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--text-tertiary);
+
+      margin-bottom: 10px;
+
+      letter-spacing: 0.04em;
+    }
+
+    .page-title {
+      font-size: 26px;
+      font-weight: 600;
+
+      line-height: 1.25;
+
+      letter-spacing: -0.03em;
+
+      margin-bottom: 12px;
+    }
+
+    .page-sub {
+      font-size: 14px;
+      line-height: 1.6;
+
+      color: var(--text-secondary);
+    }
+
+    .header-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      margin-top: 16px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+
+      padding: 5px 10px;
+
+      border-radius: 999px;
+
+      font-size: 11px;
+      font-family: var(--mono);
+
+      border: 0.5px solid var(--border);
+
+      background: var(--surface);
+
+      color: var(--text-secondary);
+    }
+
+    .chip.over {
+      background: var(--red-bg);
+      border-color: var(--red-border);
+      color: var(--red-text);
+    }
+
+    /* KPI GRID */
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+
+      margin-bottom: 32px;
+    }
+
+    .kpi-card {
+      background: var(--surface);
+
+      border: 0.5px solid var(--border);
+
+      border-radius: var(--radius);
+
+      padding: 18px;
+
+      box-shadow: var(--shadow);
+    }
+
+    .kpi-card.highlight {
+      background: var(--red-bg);
+      border-color: var(--red-border);
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      font-family: var(--mono);
+
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+
+      color: var(--text-tertiary);
+
+      margin-bottom: 10px;
+    }
+
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 600;
+
+      letter-spacing: -0.03em;
+
+      line-height: 1;
+    }
+
+    .kpi-value span {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-tertiary);
+    }
+
+    .kpi-value.over {
+      color: var(--red-text);
+    }
+
+    .kpi-sub {
+      margin-top: 8px;
+
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* SECTION */
+
+    .section {
+      margin-top: 34px;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-family: var(--mono);
+
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+
+      color: var(--text-tertiary);
+
+      margin-bottom: 14px;
+    }
+
+    /* TABLE */
+
+    .table-wrap {
+      background: var(--surface);
+
+      border: 0.5px solid var(--border);
+
+      border-radius: var(--radius);
+
+      overflow: hidden;
+
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      background: #faf9f6;
+
+      padding: 12px 16px;
+
+      font-size: 11px;
+      font-family: var(--mono);
+
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+
+      color: var(--text-tertiary);
+
+      border-bottom: 0.5px solid var(--border);
+
+      text-align: right;
+      font-weight: 500;
+    }
+
+    thead th:first-child {
+      text-align: left;
+    }
+
+    tbody td {
+      padding: 14px 16px;
+
+      border-bottom: 0.5px solid var(--border);
+
+      text-align: right;
+
+      font-size: 13px;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody td:first-child {
+      text-align: left;
+      font-weight: 500;
+    }
+
+    tbody tr:hover {
+      background: rgba(0, 0, 0, 0.015);
+    }
+
+    .num {
+      font-family: var(--mono);
+      color: var(--text-secondary);
+    }
+
+    .positive {
+      color: var(--red-text);
+      font-family: var(--mono);
+      font-weight: 500;
+    }
+
+    .negative {
+      color: var(--green-text);
+      font-family: var(--mono);
+      font-weight: 500;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+
+      padding: 4px 8px;
+
+      border-radius: 999px;
+
+      font-size: 10px;
+      font-family: var(--mono);
+
+      border: 0.5px solid;
+    }
+
+    .badge-over {
+      background: var(--red-bg);
+      border-color: var(--red-border);
+      color: var(--red-text);
+    }
+
+    .badge-under {
+      background: var(--green-bg);
+      border-color: var(--green-border);
+      color: var(--green-text);
+    }
+
+    .badge-neutral {
+      background: var(--amber-bg);
+      border-color: var(--amber-border);
+      color: var(--amber-text);
+    }
+
+    .total-row {
+      background: #faf9f6;
+      font-weight: 600;
+    }
+
+    /* CHARTS */
+
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .chart-card {
+      background: var(--surface);
+
+      border: 0.5px solid var(--border);
+
+      border-radius: var(--radius);
+
+      padding: 20px;
+
+      box-shadow: var(--shadow);
+    }
+
+    .chart-title {
+      font-size: 11px;
+      font-family: var(--mono);
+
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+
+      color: var(--text-tertiary);
+
+      margin-bottom: 18px;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 260px;
+    }
+
+    /* FOOTER */
+
+    .footer {
+      margin-top: 42px;
+
+      padding-top: 18px;
+
+      border-top: 0.5px solid var(--border);
+
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+
+      font-size: 11px;
+      font-family: var(--mono);
+
+      color: var(--text-tertiary);
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 900px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      nav {
+        padding: 0 18px;
+      }
+
+      main {
+        padding: 24px 18px 48px;
+      }
+
+      .page-title {
+        font-size: 22px;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .page-header {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <span class="nav-logo">PMO</span>
+
+    <div class="nav-sep"></div>
+
+    <span class="nav-section">
+      CR Analytics
+    </span>
+  </nav>
+
+  <main>
+
+    <div class="breadcrumb">
+      <a href="../index.html">Dashboard</a>
+      <span>›</span>
+      <a href="../cr-analytics.html">CR Analytics</a>
+      <span>›</span>
+      <span>XTPSD-2308</span>
+    </div>
+
+    <div class="page-header">
+
+      <div class="header-left">
+
+        <div class="cr-id">
+          XTPSD-2308
+        </div>
+
+        <h1 class="page-title">
+          WB — Configuración B2C por empresa + Subdominio B2C Travelclub
+        </h1>
+
+        <div class="page-sub">
+          Análisis comparativo entre esfuerzo estimado y real ejecutado por rol. El objetivo es identificar patrones de desvío y oportunidades de mejora en estimaciones futuras.
+        </div>
+
+        <div class="header-chips">
+          <span class="chip">Finalizado</span>
+          <span class="chip">WB</span>
+          <span class="chip over">+14.5% desvío</span>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="kpi-grid">
+
+      <div class="kpi-card">
+        <div class="kpi-label">
+          Horas estimadas
+        </div>
+
+        <div class="kpi-value">
+          72.9 <span>hs</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">
+          Horas reales
+        </div>
+
+        <div class="kpi-value">
+          83.5 <span>hs</span>
+        </div>
+      </div>
+
+      <div class="kpi-card highlight">
+        <div class="kpi-label">
+          Desvío total
+        </div>
+
+        <div class="kpi-value over">
+          +10.6 <span>hs</span>
+        </div>
+
+        <div class="kpi-sub">
+          +14.5% sobre estimado
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-label">
+          Roles involucrados
+        </div>
+
+        <div class="kpi-value">
+          8
+        </div>
+      </div>
+
+    </div>
+
+    <section class="section">
+
+      <div class="section-title">
+        Desvío por rol
+      </div>
+
+      <div class="table-wrap">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Rol</th>
+              <th>Estimado</th>
+              <th>Real</th>
+              <th>Desvío</th>
+              <th>Desvío %</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr>
+              <td>Backend</td>
+              <td class="num">32.0 hs</td>
+              <td class="num">48.0 hs</td>
+              <td class="positive">+16.0 hs</td>
+              <td class="positive">+50.0%</td>
+              <td><span class="badge badge-over">Excedido</span></td>
+            </tr>
+
+            <tr>
+              <td>Frontend</td>
+              <td class="num">16.0 hs</td>
+              <td class="num">23.0 hs</td>
+              <td class="positive">+7.0 hs</td>
+              <td class="positive">+43.8%</td>
+              <td><span class="badge badge-over">Excedido</span></td>
+            </tr>
+
+            <tr>
+              <td>UX/UI</td>
+              <td class="num">2.4 hs</td>
+              <td class="num">0.0 hs</td>
+              <td class="negative">−2.4 hs</td>
+              <td class="negative">−100%</td>
+              <td><span class="badge badge-under">Bajo</span></td>
+            </tr>
+
+            <tr>
+              <td>QA</td>
+              <td class="num">4.5 hs</td>
+              <td class="num">0.0 hs</td>
+              <td class="negative">−4.5 hs</td>
+              <td class="negative">−100%</td>
+              <td><span class="badge badge-under">Bajo</span></td>
+            </tr>
+
+            <tr>
+              <td>Automation</td>
+              <td class="num">2.0 hs</td>
+              <td class="num">1.0 hs</td>
+              <td class="negative">−1.0 hs</td>
+              <td class="negative">−50%</td>
+              <td><span class="badge badge-under">Bajo</span></td>
+            </tr>
+
+            <tr>
+              <td>DevOps</td>
+              <td class="num">11.0 hs</td>
+              <td class="num">2.0 hs</td>
+              <td class="negative">−9.0 hs</td>
+              <td class="negative">−81.8%</td>
+              <td><span class="badge badge-under">Bajo</span></td>
+            </tr>
+
+            <tr>
+              <td>Análisis</td>
+              <td class="num">3.1 hs</td>
+              <td class="num">8.0 hs</td>
+              <td class="positive">+4.9 hs</td>
+              <td class="positive">+158.1%</td>
+              <td><span class="badge badge-over">Excedido</span></td>
+            </tr>
+
+            <tr>
+              <td>Arquitectura</td>
+              <td class="num">1.9 hs</td>
+              <td class="num">1.5 hs</td>
+              <td class="negative">−0.4 hs</td>
+              <td class="negative">−21.1%</td>
+              <td><span class="badge badge-neutral">Leve</span></td>
+            </tr>
+
+            <tr class="total-row">
+              <td>TOTAL</td>
+              <td class="num">72.9 hs</td>
+              <td class="num">83.5 hs</td>
+              <td class="positive">+10.6 hs</td>
+              <td class="positive">+14.5%</td>
+              <td><span class="badge badge-over">Excedido</span></td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+    <section class="section">
+
+      <div class="section-title">
+        Visualización ejecutiva
+      </div>
+
+      <div class="charts-grid">
+
+        <div class="chart-card">
+
+          <div class="chart-title">
+            Estimado vs Real por rol
+          </div>
+
+          <div class="chart-wrap">
+            <canvas id="chart1"></canvas>
+          </div>
+
+        </div>
+
+        <div class="chart-card">
+
+          <div class="chart-title">
+            Desvío absoluto por rol
+          </div>
+
+          <div class="chart-wrap">
+            <canvas id="chart2"></canvas>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <div class="footer">
+      <span>
+        PMO Dashboard · CR Analytics
+      </span>
+
+      <span id="fecha"></span>
+    </div>
+
+  </main>
+
+  <script>
+    document.getElementById('fecha').textContent =
+      new Date().toLocaleDateString('es-AR', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      });
+
+    const roles = [
+      'Backend',
+      'Frontend',
+      'UX/UI',
+      'QA',
+      'Automation',
+      'DevOps',
+      'Análisis',
+      'Arquitectura'
+    ];
+
+    const estimated = [32, 16, 2.4, 4.5, 2, 11, 3.1, 1.9];
+    const real = [48, 23, 0, 0, 1, 2, 8, 1.5];
+
+    const variance = real.map((r, i) =>
+      +(r - estimated[i]).toFixed(1)
+    );
+
+    const gridColor = '#e7e4db';
+    const tickColor = '#8f8c84';
+
+    Chart.defaults.font.family = 'IBM Plex Mono';
+
+    new Chart(document.getElementById('chart1'), {
+      type: 'bar',
+
+      data: {
+        labels: roles,
+
+        datasets: [
+          {
+            label: 'Estimado',
+            data: estimated,
+            backgroundColor: 'rgba(180, 199, 231, 0.8)',
+            borderColor: '#8EA7D6',
+            borderWidth: 1,
+            borderRadius: 4
+          },
+
+          {
+            label: 'Real',
+            data: real,
+            backgroundColor: 'rgba(236, 163, 138, 0.85)',
+            borderColor: '#D97D5C',
+            borderWidth: 1,
+            borderRadius: 4
+          }
+        ]
+      },
+
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              boxWidth: 10,
+              color: tickColor
+            }
+          }
+        },
+
+        scales: {
+          x: {
+            grid: {
+              display: false
+            },
+
+            ticks: {
+              color: tickColor,
+              font: {
+                size: 10
+              }
+            }
+          },
+
+          y: {
+            beginAtZero: true,
+
+            grid: {
+              color: gridColor
+            },
+
+            ticks: {
+              color: tickColor,
+
+              callback: value => value + ' hs',
+
+              font: {
+                size: 10
+              }
+            }
+          }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('chart2'), {
+      type: 'bar',
+
+      data: {
+        labels: roles,
+
+        datasets: [{
+          label: 'Desvío',
+          data: variance,
+
+          backgroundColor: variance.map(v =>
+            v > 0
+              ? 'rgba(252, 165, 165, 0.8)'
+              : 'rgba(134, 239, 172, 0.8)'
+          ),
+
+          borderColor: variance.map(v =>
+            v > 0
+              ? '#DC2626'
+              : '#16A34A'
+          ),
+
+          borderWidth: 1,
+          borderRadius: 4
+        }]
+      },
+
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+
+        scales: {
+          x: {
+            grid: {
+              display: false
+            },
+
+            ticks: {
+              color: tickColor,
+
+              font: {
+                size: 10
+              }
+            }
+          },
+
+          y: {
+            grid: {
+              color: gridColor
+            },
+
+            ticks: {
+              color: tickColor,
+
+              callback: value =>
+                (value > 0 ? '+' : '') + value + ' hs',
+
+              font: {
+                size: 10
+              }
+            }
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+
+</html>
