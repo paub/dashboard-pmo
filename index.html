@@ -1,300 +1,410 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PMO Dashboard</title>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #f5f4f0;
-    --surface: #ffffff;
-    --border: rgba(0,0,0,0.1);
-    --border-strong: rgba(0,0,0,0.18);
-    --text-primary: #1a1a18;
-    --text-secondary: #5f5e5a;
-    --text-tertiary: #9a9890;
-    --red-bg: #FCEBEB;
-    --red-text: #A32D2D;
-    --red-border: #E24B4A;
-    --green-bg: #EAF3DE;
-    --green-text: #3B6D11;
-    --green-border: #639922;
-    --blue-light: #B5D4F4;
-    --mono: 'Courier New', monospace;
-  }
-  body { font-family: -apple-system,  Anthropic Sans, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  /* NAV */
-  nav { background: var(--surface); border-bottom: 0.5px solid var(--border); padding: 0 32px; height: 52px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 10; }
-  .nav-logo { font-size: 14px; font-weight: 500; color: var(--text-primary); }
-  .nav-sep { width: 0.5px; height: 16px; background: var(--border-strong); }
-  .nav-section { font-size: 13px; color: var(--text-secondary); }
-  .nav-back { display: none; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); cursor: pointer; background: none; border: none; padding: 0; }
-  .nav-back:hover { color: var(--text-primary); }
-  .nav-back svg { width: 14px; height: 14px; }
+  <title>PMO Dashboard</title>
 
-  /* LAYOUT */
-  main { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  /* PAGE HEADER */
-  .page-header { margin-bottom: 28px; }
-  .page-title { font-size: 20px; font-weight: 500; color: var(--text-primary); margin-bottom: 4px; }
-  .page-sub { font-size: 13px; color: var(--text-secondary); }
+    :root {
+      --bg: #f5f4f0;
+      --surface: #ffffff;
 
-  /* VIEWS */
-  #view-detail { display: none; }
+      --border: rgba(0, 0, 0, 0.08);
+      --border-strong: rgba(0, 0, 0, 0.16);
 
-  /* GRID */
-  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+      --text-primary: #1a1a18;
+      --text-secondary: #5f5e5a;
+      --text-tertiary: #9a9890;
 
-  /* CR CARD */
-  .cr-card {
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    border-radius: 12px;
-    border-left: 3px solid var(--red-border);
-    padding: 16px 18px;
-    cursor: pointer;
-    transition: box-shadow 0.15s, border-color 0.15s;
-    text-decoration: none;
-    display: block;
-  }
-  .cr-card.under { border-left-color: var(--green-border); }
-  .cr-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); border-color: var(--border-strong); }
-  .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-  .card-id { font-size: 11px; font-weight: 500; color: var(--text-tertiary); font-family: var(--mono); }
-  .card-badge {
-    margin-left: auto;
-    font-size: 11px; font-weight: 500;
-    padding: 2px 9px; border-radius: 20px;
-    display: flex; align-items: center; gap: 4px;
-  }
-  .badge-over { background: var(--red-bg); color: var(--red-text); }
-  .badge-under { background: var(--green-bg); color: var(--green-text); }
-  .card-title { font-size: 13px; font-weight: 500; color: var(--text-primary); line-height: 1.45; margin-bottom: 14px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 38px; }
-  .card-sep { height: 0.5px; background: var(--border); margin-bottom: 12px; }
-  .card-metrics { display: flex; justify-content: space-between; align-items: center; }
-  .metric { display: flex; flex-direction: column; gap: 2px; }
-  .metric-val { font-size: 15px; font-weight: 500; }
-  .metric-val.over { color: var(--red-text); }
-  .metric-lbl { font-size: 11px; color: var(--text-tertiary); }
-  .metric-divider { width: 0.5px; background: var(--border); height: 28px; }
-  .delta-chip {
-    display: flex; align-items: center; gap: 4px;
-    font-size: 12px; font-weight: 500;
-    padding: 4px 10px; border-radius: 20px;
-  }
-  .delta-over { background: var(--red-bg); color: var(--red-text); }
-  .delta-under { background: var(--green-bg); color: var(--green-text); }
-  .arrow { font-size: 10px; }
+      --red-bg: #FCEBEB;
+      --red-text: #A32D2D;
+      --red-border: #E24B4A;
 
-  /* EMPTY SLOT */
-  .card-empty {
-    border: 0.5px dashed var(--border-strong);
-    border-radius: 12px;
-    padding: 16px 18px;
-    display: flex; align-items: center; justify-content: center;
-    min-height: 130px;
-    color: var(--text-tertiary);
-    font-size: 13px;
-    gap: 6px;
-  }
+      --green-bg: #EAF3DE;
+      --green-text: #3B6D11;
+      --green-border: #639922;
 
-  /* DETAIL */
-  .detail-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: 12px; overflow: hidden; }
-  .detail-top { padding: 20px 24px; border-bottom: 0.5px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
-  .detail-top-left .cr-id { font-size: 12px; font-weight: 500; color: var(--text-tertiary); font-family: var(--mono); margin-bottom: 4px; }
-  .detail-top-left .cr-title { font-size: 15px; font-weight: 500; color: var(--text-primary); max-width: 480px; line-height: 1.4; }
-  .detail-summary { display: flex; gap: 24px; flex-shrink: 0; }
-  .summary-item { text-align: right; }
-  .summary-val { font-size: 18px; font-weight: 500; }
-  .summary-val.over { color: var(--red-text); }
-  .summary-lbl { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
+      --shadow:
+        0 1px 2px rgba(0, 0, 0, 0.03),
+        0 3px 12px rgba(0, 0, 0, 0.04);
 
-  /* ROLES TABLE */
-  .detail-table { width: 100%; border-collapse: collapse; }
-  .detail-table th {
-    text-align: left; padding: 10px 24px;
-    font-size: 11px; font-weight: 500; color: var(--text-tertiary);
-    text-transform: uppercase; letter-spacing: 0.05em;
-    background: #faf9f6;
-    border-bottom: 0.5px solid var(--border);
-  }
-  .detail-table th:not(:first-child) { text-align: right; }
-  .detail-table td { padding: 12px 24px; font-size: 13px; border-bottom: 0.5px solid var(--border); vertical-align: middle; }
-  .detail-table tr:last-child td { border-bottom: none; }
-  .detail-table td:not(:first-child) { text-align: right; }
-  .role-name { font-weight: 500; color: var(--text-primary); }
-  .td-over { color: var(--red-text); font-weight: 500; }
-  .td-under { color: var(--green-text); font-weight: 500; }
-  .td-neutral { color: var(--text-secondary); }
-  .bar-mini { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
-  .bar-mini-track { width: 80px; height: 5px; background: #eee; border-radius: 3px; overflow: hidden; position: relative; flex-shrink: 0; }
-  .bar-mini-fill { height: 5px; border-radius: 3px; position: absolute; top: 0; left: 0; }
+      --radius: 12px;
 
-  .tfoot-row td { background: #faf9f6; font-weight: 500; border-top: 0.5px solid var(--border-strong) !important; }
-</style>
+      --mono: 'SF Mono', 'Monaco', monospace;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    /* NAV */
+
+    nav {
+      height: 52px;
+      background: var(--surface);
+
+      border-bottom: 0.5px solid var(--border);
+
+      display: flex;
+      align-items: center;
+      gap: 14px;
+
+      padding: 0 32px;
+
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .nav-logo {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav-sep {
+      width: 1px;
+      height: 14px;
+      background: var(--border-strong);
+    }
+
+    .nav-section {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* LAYOUT */
+
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    /* PAGE HEADER */
+
+    .page-header {
+      margin-bottom: 28px;
+    }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+
+    .page-sub {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      max-width: 620px;
+    }
+
+    /* GRID */
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 14px;
+    }
+
+    /* CARD */
+
+    .cr-card {
+      background: var(--surface);
+
+      border:
+        0.5px solid var(--border);
+
+      border-left:
+        3px solid var(--red-border);
+
+      border-radius: var(--radius);
+
+      padding: 16px 18px;
+
+      box-shadow: var(--shadow);
+
+      transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+    }
+
+    .cr-card:hover {
+      transform: translateY(-1px);
+
+      box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.04),
+        0 8px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .cr-card.under {
+      border-left-color: var(--green-border);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      margin-bottom: 12px;
+    }
+
+    .card-id {
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--text-tertiary);
+      letter-spacing: 0.03em;
+    }
+
+    .card-badge {
+      margin-left: auto;
+
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+
+      font-size: 11px;
+      font-weight: 500;
+
+      padding: 3px 9px;
+
+      border-radius: 999px;
+    }
+
+    .badge-over {
+      background: var(--red-bg);
+      color: var(--red-text);
+    }
+
+    .badge-under {
+      background: var(--green-bg);
+      color: var(--green-text);
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 500;
+
+      line-height: 1.5;
+
+      margin-bottom: 14px;
+
+      color: var(--text-primary);
+    }
+
+    .card-sep {
+      height: 1px;
+      background: var(--border);
+
+      margin-bottom: 12px;
+    }
+
+    .card-metrics {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .metric {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .metric-val {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .metric-val.over {
+      color: var(--red-text);
+    }
+
+    .metric-lbl {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    .metric-divider {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+    }
+
+    .delta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+
+      padding: 5px 10px;
+
+      border-radius: 999px;
+
+      font-size: 12px;
+      font-weight: 600;
+
+      white-space: nowrap;
+    }
+
+    .delta-over {
+      background: var(--red-bg);
+      color: var(--red-text);
+    }
+
+    .delta-under {
+      background: var(--green-bg);
+      color: var(--green-text);
+    }
+
+    /* EMPTY CARD */
+
+    .card-empty {
+      min-height: 132px;
+
+      border:
+        1px dashed var(--border-strong);
+
+      border-radius: var(--radius);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: var(--text-tertiary);
+
+      font-size: 13px;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 640px) {
+      nav {
+        padding: 0 18px;
+      }
+
+      main {
+        padding: 24px 18px 48px;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  </style>
 </head>
+
 <body>
 
-<nav>
-  <span class="nav-logo">PMO</span>
-  <div class="nav-sep"></div>
-  <span class="nav-section" id="nav-section">CRs finalizados</span>
-  <button class="nav-back" id="nav-back" onclick="showDashboard()">
-    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3L5 8l5 5"/></svg>
-    Volver al dashboard
-  </button>
-</nav>
+  <nav>
+    <span class="nav-logo">PMO</span>
 
-<main>
-  <!-- DASHBOARD VIEW -->
-  <div id="view-dashboard">
+    <div class="nav-sep"></div>
+
+    <span class="nav-section">
+      CRs finalizados
+    </span>
+  </nav>
+
+  <main>
+
     <div class="page-header">
-      <div class="page-title">CRs finalizados</div>
-      <div class="page-sub">Comparativa de horas estimadas vs. reales por CR</div>
+
+      <div class="page-title">
+        Dashboard de desvíos de esfuerzo
+      </div>
+
+      <div class="page-sub">
+        Comparativa entre horas estimadas y reales por Change Request finalizado.
+      </div>
+
     </div>
+
     <div class="cards-grid">
 
-      <div class="cr-card" onclick="showDetail()">
+      <div class="cr-card">
+
         <div class="card-header">
-          <span class="card-id">XTPSD-2308</span>
-          <span class="card-badge badge-over">↑ Excedido</span>
+
+          <span class="card-id">
+            XTPSD-2308
+          </span>
+
+          <span class="card-badge badge-over">
+            ↑ Excedido
+          </span>
+
         </div>
-        <div class="card-title">WB — Configuración B2C por empresa + Subdominio B2C Travelclub</div>
+
+        <div class="card-title">
+          WB — Configuración B2C por empresa + Subdominio B2C Travelclub
+        </div>
+
         <div class="card-sep"></div>
+
         <div class="card-metrics">
+
           <div class="metric">
-            <span class="metric-val over">83.5 hs</span>
-            <span class="metric-lbl">Real</span>
+            <span class="metric-val over">
+              83.5 hs
+            </span>
+
+            <span class="metric-lbl">
+              Real
+            </span>
           </div>
+
           <div class="metric-divider"></div>
+
           <div class="metric">
-            <span class="metric-val">72.9 hs</span>
-            <span class="metric-lbl">Estimado</span>
+            <span class="metric-val">
+              72.9 hs
+            </span>
+
+            <span class="metric-lbl">
+              Estimado
+            </span>
           </div>
+
           <div class="metric-divider"></div>
-          <span class="delta-chip delta-over">↑ +10.6 hs · 14.5%</span>
+
+          <span class="delta-chip delta-over">
+            ↑ +10.6 hs · 14.5%
+          </span>
+
         </div>
+
       </div>
 
-      <div class="card-empty">+ Próximo CR</div>
-      <div class="card-empty">+ Próximo CR</div>
-
-    </div>
-  </div>
-
-  <!-- DETAIL VIEW -->
-  <div id="view-detail">
-    <div class="page-header">
-      <div class="page-title">Desvío por rol</div>
-      <div class="page-sub">XTPSD-2308 — WB · Configuración B2C por empresa + Subdominio B2C Travelclub</div>
-    </div>
-
-    <div class="detail-card">
-      <div class="detail-top">
-        <div class="detail-top-left">
-          <div class="cr-id">XTPSD-2308</div>
-          <div class="cr-title">WB — Configuración B2C por empresa + Subdominio B2C Travelclub</div>
-        </div>
-        <div class="detail-summary">
-          <div class="summary-item">
-            <div class="summary-val over">83.5 hs</div>
-            <div class="summary-lbl">Real total</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-val">72.9 hs</div>
-            <div class="summary-lbl">Estimado total</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-val over">+14.5%</div>
-            <div class="summary-lbl">Desvío</div>
-          </div>
-        </div>
+      <div class="card-empty">
+        Próximo CR
       </div>
 
-      <table class="detail-table">
-        <thead>
-          <tr>
-            <th>Rol</th>
-            <th>Estimado</th>
-            <th>Real</th>
-            <th>Desvío</th>
-            <th>Distribución</th>
-          </tr>
-        </thead>
-        <tbody id="roles-tbody"></tbody>
-        <tfoot>
-          <tr class="tfoot-row">
-            <td>Total</td>
-            <td>72.9 hs</td>
-            <td class="td-over">83.5 hs</td>
-            <td class="td-over">+10.6 hs (14.5%)</td>
-            <td></td>
-          </tr>
-        </tfoot>
-      </table>
+      <div class="card-empty">
+        Próximo CR
+      </div>
+
     </div>
-  </div>
-</main>
 
-<script>
-const roles = [
-  { name: 'Tech Lead',         est: 12.0, real: 15.5 },
-  { name: 'Desarrollador Sr.', est: 28.0, real: 34.0 },
-  { name: 'Desarrollador Jr.', est: 14.0, real: 16.0 },
-  { name: 'QA',                est: 10.0, real:  9.5 },
-  { name: 'UX / Diseño',       est:  6.5, real:  5.5 },
-  { name: 'PM',                est:  2.4, real:  3.0 },
-];
+  </main>
 
-const maxHs = Math.max(...roles.map(r => Math.max(r.est, r.real)));
-
-function renderRoles() {
-  const tbody = document.getElementById('roles-tbody');
-  tbody.innerHTML = roles.map(r => {
-    const diff = r.real - r.est;
-    const pct  = ((diff / r.est) * 100).toFixed(1);
-    const over  = diff > 0.05;
-    const under = diff < -0.05;
-    const cls   = over ? 'td-over' : under ? 'td-under' : 'td-neutral';
-    const sign  = diff > 0 ? '+' : '';
-    const estW  = (r.est  / maxHs * 100).toFixed(1);
-    const realW = (r.real / maxHs * 100).toFixed(1);
-    const fillColor = over ? '#E24B4A' : under ? '#639922' : '#888780';
-    return `
-      <tr>
-        <td><span class="role-name">${r.name}</span></td>
-        <td class="td-neutral">${r.est.toFixed(1)} hs</td>
-        <td class="${cls}">${r.real.toFixed(1)} hs</td>
-        <td class="${cls}">${sign}${diff.toFixed(1)} hs (${sign}${pct}%)</td>
-        <td>
-          <div class="bar-mini">
-            <div class="bar-mini-track">
-              <div class="bar-mini-fill" style="width:${estW}%;background:#ddd;"></div>
-              <div class="bar-mini-fill" style="width:${realW}%;background:${fillColor};opacity:0.7;"></div>
-            </div>
-          </div>
-        </td>
-      </tr>`;
-  }).join('');
-}
-
-function showDetail() {
-  renderRoles();
-  document.getElementById('view-dashboard').style.display = 'none';
-  document.getElementById('view-detail').style.display = 'block';
-  document.getElementById('nav-back').style.display = 'flex';
-  document.getElementById('nav-section').style.display = 'none';
-}
-
-function showDashboard() {
-  document.getElementById('view-dashboard').style.display = 'block';
-  document.getElementById('view-detail').style.display = 'none';
-  document.getElementById('nav-back').style.display = 'none';
-  document.getElementById('nav-section').style.display = 'inline';
-}
-</script>
 </body>
+
 </html>
