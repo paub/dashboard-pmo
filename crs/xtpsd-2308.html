@@ -59,38 +59,40 @@
       line-height: 1.5;
     }
 
-    /* NAV */
-    nav {
-      height: 60px;
+     /* NAV (Idéntico a Home) */
+     nav {
+      height: 56px;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
       padding: 0 32px;
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 100;
     }
 
     .nav-logo {
-      font-size: 16px;
+      font-size: 13px;
       font-weight: 700;
-      color: var(--primary);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
     }
 
     .nav-sep {
       width: 1px;
-      height: 20px;
-      background: var(--border);
+      height: 14px;
+      background: var(--border-strong);
     }
 
     .nav-section {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
-      color: var(--text-secondary);
+      color: var(--text-primary);
     }
-
+    
     /* LAYOUT */
     main {
       max-width: 1100px;
@@ -332,9 +334,9 @@
     <div class="breadcrumb">
       <a href="../index.html">Inicio</a>
       <span class="breadcrumb-sep">/</span>
-      <span class="breadcrumb-current">Change Requests</span>
-      <span>/</span>
-      <span style="color: var(--text-main)">XTPSD-2308</span>
+      <a href="../crs/index.html">Change Requests</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">XTPSD-2308</span>
     </div>
 
     <div class="page-header">
