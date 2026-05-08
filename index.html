@@ -17,24 +17,23 @@
     }
 
     :root {
-      --bg: #f5f4f0;
+      --bg: #f8f9fa;
       --surface: #ffffff;
+      --accent: #2563eb; /* Azul corporativo para detalles */
 
       --border: rgba(0, 0, 0, 0.08);
-      --border-strong: rgba(0, 0, 0, 0.16);
+      --border-strong: rgba(0, 0, 0, 0.15);
 
       --text-primary: #1a1a18;
-      --text-secondary: #5f5e5a;
-      --text-tertiary: #9a9890;
+      --text-secondary: #51514e;
+      --text-tertiary: #8a8980;
 
       --shadow:
-        0 1px 2px rgba(0,0,0,0.03),
-        0 6px 24px rgba(0,0,0,0.04);
+        0 1px 3px rgba(0,0,0,0.05),
+        0 10px 20px rgba(0,0,0,0.03);
 
-      --radius: 14px;
-
-      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      --mono: 'SF Mono', monospace;
+      --radius: 16px;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
     body {
@@ -42,21 +41,18 @@
       background: var(--bg);
       color: var(--text-primary);
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     /* NAV */
-
     nav {
-      height: 52px;
+      height: 56px;
       background: var(--surface);
-
-      border-bottom: 0.5px solid var(--border);
-
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
-
       padding: 0 32px;
-
       position: sticky;
       top: 0;
       z-index: 10;
@@ -64,135 +60,115 @@
 
     .nav-logo {
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--text-primary);
     }
 
     /* LAYOUT */
-
     main {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 42px 24px 64px;
+      max-width: 900px; /* Un poco más estrecho para centralizar el foco */
+      width: 100%;
+      margin: auto; /* Centra verticalmente en el viewport si hay poco contenido */
+      padding: 60px 24px;
     }
 
     /* HERO */
-
     .hero {
-      margin-bottom: 40px;
+      text-align: center; /* Centrado para compensar la poca cantidad de cards */
+      margin-bottom: 48px;
     }
 
     .hero-title {
-      font-size: 34px;
-      font-weight: 650;
-      letter-spacing: -0.03em;
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
       margin-bottom: 12px;
+      color: var(--text-primary);
     }
 
     .hero-sub {
-      max-width: 720px;
-
-      font-size: 15px;
-      line-height: 1.7;
-
+      font-size: 16px;
       color: var(--text-secondary);
     }
 
     /* GRID */
-
     .sections-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(2, 1fr); /* 2 columnas fijas para este caso */
+      gap: 24px;
     }
 
     /* SECTION CARD */
-
     .section-card {
       background: var(--surface);
-
-      border: 0.5px solid var(--border);
-
+      border: 1px solid var(--border);
       border-radius: var(--radius);
-
-      padding: 22px;
-
+      padding: 32px;
       box-shadow: var(--shadow);
-
       text-decoration: none;
       color: inherit;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+    }
 
-      transition:
-        transform 0.15s ease,
-        box-shadow 0.15s ease,
-        border-color 0.15s ease;
+    /* Icono decorativo */
+    .section-card::before {
+      content: '→';
+      position: absolute;
+      right: 24px;
+      bottom: 24px;
+      font-size: 20px;
+      color: var(--accent);
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: all 0.2s ease;
     }
 
     .section-card:hover {
-      transform: translateY(-2px);
-
-      border-color: var(--border-strong);
-
-      box-shadow:
-        0 2px 6px rgba(0,0,0,0.04),
-        0 10px 28px rgba(0,0,0,0.06);
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 12px 30px rgba(37, 99, 235, 0.08);
     }
 
-    .section-label {
-      font-size: 11px;
-      font-family: var(--mono);
+    .section-card:hover::before {
+      opacity: 1;
+      transform: translateX(0);
+    }
 
-      color: var(--text-tertiary);
-
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-
-      margin-bottom: 14px;
+    .card-icon {
+      font-size: 32px;
+      margin-bottom: 20px;
     }
 
     .section-title {
-      font-size: 20px;
-      font-weight: 600;
-
-      margin-bottom: 10px;
-
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
       letter-spacing: -0.02em;
     }
 
     .section-desc {
-      font-size: 14px;
-      line-height: 1.6;
-
+      font-size: 15px;
+      line-height: 1.5;
       color: var(--text-secondary);
-    }
-
-    /* FOOTER */
-
-    .footer {
-      margin-top: 48px;
-
-      font-size: 12px;
-      color: var(--text-tertiary);
-
-      font-family: var(--mono);
+      margin-bottom: 10px;
     }
 
     /* MOBILE */
-
-    @media (max-width: 640px) {
-      nav {
-        padding: 0 18px;
-      }
-
-      main {
-        padding: 32px 18px 48px;
-      }
-
-      .hero-title {
-        font-size: 28px;
-      }
-
+    @media (max-width: 768px) {
       .sections-grid {
         grid-template-columns: 1fr;
+      }
+      main {
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+      .hero-title {
+        font-size: 30px;
       }
     }
 
@@ -203,45 +179,33 @@
 
   <nav>
     <span class="nav-logo">
-      Dasboard PMO
+      DASHBOARD PMO
     </span>
   </nav>
 
   <main>
 
     <section class="hero">
-
-      <div class="hero-title">
-        Dashboard PMO
-      </div>
-
+      <h1 class="hero-title">Gestión de Proyectos</h1>
+      <p class="hero-sub">Seleccione un área para visualizar los indicadores de desempeño.</p>
     </section>
 
     <section class="sections-grid">
 
       <a class="section-card" href="reportes/mensual/index.html">
-
-        <div class="section-title">
-          Métricas mensuales
-        </div>
-
+        <div class="card-icon">📊</div>
+        <div class="section-title">Métricas Mensuales</div>
         <div class="section-desc">
-          Seguimiento mensual de esfuerzo y métricas de Service Desk.
+          Seguimiento de esfuerzo, performance y métricas clave de Service Desk.
         </div>
-
       </a>
 
       <a class="section-card" href="crs/index.html">
-
-        <div class="section-title">
-          Change Requests
-        </div>
-
+        <div class="card-icon">⚙️</div>
+        <div class="section-title">Change Requests</div>
         <div class="section-desc">
-          Métricas de desvío esfuerzo por Change Request,
-          incluyendo breakdown por rol y comparativa entre estimación y ejecución real.
+          Análisis de desvíos, breakdown por rol y comparativa de ejecución real.
         </div>
-
       </a>
 
     </section>
