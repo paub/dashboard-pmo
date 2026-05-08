@@ -20,8 +20,8 @@
       --bg: #f5f4f0;
       --surface: #ffffff;
 
-      --border: rgba(0,0,0,0.08);
-      --border-strong: rgba(0,0,0,0.16);
+      --border: rgba(0, 0, 0, 0.08);
+      --border-strong: rgba(0, 0, 0, 0.16);
 
       --text-primary: #1a1a18;
       --text-secondary: #5f5e5a;
@@ -37,12 +37,12 @@
 
       --shadow:
         0 1px 2px rgba(0,0,0,0.03),
-        0 6px 24px rgba(0,0,0,0.04);
+        0 3px 12px rgba(0,0,0,0.04);
 
-      --radius: 14px;
+      --radius: 12px;
 
+      --mono: 'SF Mono', 'Monaco', monospace;
       --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      --mono: 'SF Mono', monospace;
     }
 
     body {
@@ -51,6 +51,8 @@
       color: var(--text-primary);
       min-height: 100vh;
     }
+
+    /* NAV */
 
     nav {
       height: 52px;
@@ -63,6 +65,10 @@
       gap: 14px;
 
       padding: 0 32px;
+
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     .nav-logo {
@@ -81,69 +87,112 @@
       color: var(--text-secondary);
     }
 
+    /* LAYOUT */
+
     main {
-      max-width: 1080px;
+      max-width: 960px;
       margin: 0 auto;
-      padding: 36px 24px 64px;
+      padding: 32px 24px 64px;
     }
+
+    /* BREADCRUMB */
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      margin-bottom: 24px;
+
+      font-size: 13px;
+    }
+
+    .breadcrumb a {
+      color: var(--text-secondary);
+      text-decoration: none;
+
+      transition: color 0.15s ease;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--text-primary);
+    }
+
+    .breadcrumb-sep {
+      color: var(--text-tertiary);
+    }
+
+    .breadcrumb-current {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    /* PAGE HEADER */
 
     .page-header {
       margin-bottom: 28px;
     }
 
     .page-title {
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 650;
 
-      letter-spacing: -0.03em;
+      margin-bottom: 8px;
 
-      margin-bottom: 10px;
+      letter-spacing: -0.03em;
     }
 
     .page-sub {
-      max-width: 760px;
-
       font-size: 14px;
       line-height: 1.7;
 
       color: var(--text-secondary);
+
+      max-width: 720px;
     }
+
+    /* GRID */
 
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 14px;
     }
+
+    /* CARD */
 
     .cr-card {
       background: var(--surface);
 
       border: 0.5px solid var(--border);
+
       border-left: 3px solid var(--red-border);
 
       border-radius: var(--radius);
 
-      padding: 18px;
+      padding: 16px 18px;
 
       box-shadow: var(--shadow);
 
-      text-decoration: none;
-      color: inherit;
-
       transition:
         transform 0.15s ease,
-        box-shadow 0.15s ease,
-        border-color 0.15s ease;
+        box-shadow 0.15s ease;
+
+      text-decoration: none;
+
+      color: inherit;
+
+      display: block;
+
+      cursor: pointer;
     }
 
     .cr-card:hover {
-      transform: translateY(-2px);
-
-      border-color: var(--border-strong);
+      transform: translateY(-1px);
 
       box-shadow:
         0 2px 6px rgba(0,0,0,0.04),
-        0 10px 28px rgba(0,0,0,0.06);
+        0 8px 20px rgba(0,0,0,0.05);
     }
 
     .cr-card.under {
@@ -153,8 +202,9 @@
     .card-header {
       display: flex;
       align-items: center;
+      gap: 10px;
 
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .card-id {
@@ -163,7 +213,7 @@
 
       color: var(--text-tertiary);
 
-      letter-spacing: 0.04em;
+      letter-spacing: 0.03em;
     }
 
     .card-badge {
@@ -174,9 +224,9 @@
       gap: 4px;
 
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 500;
 
-      padding: 4px 10px;
+      padding: 3px 9px;
 
       border-radius: 999px;
     }
@@ -192,25 +242,28 @@
     }
 
     .card-title {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 500;
 
       line-height: 1.5;
 
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+
+      color: var(--text-primary);
     }
 
     .card-sep {
       height: 1px;
       background: var(--border);
 
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .card-metrics {
       display: flex;
       align-items: center;
       justify-content: space-between;
+
       gap: 12px;
     }
 
@@ -243,7 +296,7 @@
     .delta-chip {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
 
       padding: 5px 10px;
 
@@ -265,18 +318,40 @@
       color: var(--green-text);
     }
 
+    /* EMPTY CARD */
+
+    .card-empty {
+      min-height: 132px;
+
+      border: 1px dashed var(--border-strong);
+
+      border-radius: var(--radius);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: var(--text-tertiary);
+
+      font-size: 13px;
+    }
+
+    /* RESPONSIVE */
+
     @media (max-width: 640px) {
+
       nav {
         padding: 0 18px;
       }
 
       main {
-        padding: 28px 18px 48px;
+        padding: 24px 18px 48px;
       }
 
       .cards-grid {
         grid-template-columns: 1fr;
       }
+
     }
 
   </style>
@@ -300,6 +375,22 @@
 
   <main>
 
+    <div class="breadcrumb">
+
+      <a href="../../index.html">
+        PMO Analytics
+      </a>
+
+      <span class="breadcrumb-sep">
+        /
+      </span>
+
+      <span class="breadcrumb-current">
+        CR Analytics
+      </span>
+
+    </div>
+
     <div class="page-header">
 
       <div class="page-title">
@@ -307,9 +398,9 @@
       </div>
 
       <div class="page-sub">
-        Histórico de análisis de esfuerzo por Change Request.
-        Incluye comparativa entre estimación y ejecución real,
-        breakdown operativo por rol y métricas de desvío.
+        Análisis comparativo entre horas estimadas y reales
+        por Change Request finalizado, incluyendo métricas
+        operativas y desvíos de ejecución.
       </div>
 
     </div>
@@ -339,6 +430,7 @@
         <div class="card-metrics">
 
           <div class="metric">
+
             <span class="metric-val over">
               83.5 hs
             </span>
@@ -346,11 +438,13 @@
             <span class="metric-lbl">
               Real
             </span>
+
           </div>
 
           <div class="metric-divider"></div>
 
           <div class="metric">
+
             <span class="metric-val">
               72.9 hs
             </span>
@@ -358,17 +452,26 @@
             <span class="metric-lbl">
               Estimado
             </span>
+
           </div>
 
           <div class="metric-divider"></div>
 
           <span class="delta-chip delta-over">
-            ↑ +14.5%
+            ↑ +10.6 hs · 14.5%
           </span>
 
         </div>
 
       </a>
+
+      <div class="card-empty">
+        Próximo CR
+      </div>
+
+      <div class="card-empty">
+        Próximo CR
+      </div>
 
     </div>
 
