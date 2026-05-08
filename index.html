@@ -1,118 +1,187 @@
-<style>
-  /* ... manteniendo tus variables anteriores ... */
-  
-  main {
-    max-width: 800px; /* Reducimos el ancho para que las 2 cards no se alejen tanto */
-    width: 100%;
-    margin: auto;
-    padding: 80px 24px; /* Más aire arriba para centrar la vista */
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centra todo el contenido */
-  }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard PMO</title>
+  <style>
+    /* 1. RESET Y VARIABLES GLOBALES */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  .hero {
-    text-align: center;
-    margin-bottom: 60px;
-  }
+    :root {
+      --bg: #f9fafb;
+      --surface: #ffffff;
+      --accent: #2563eb;
+      --border: rgba(0, 0, 0, 0.08);
+      --text-primary: #111827;
+      --text-secondary: #4b5563;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
 
-  .sections-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-    width: 100%; /* Que ocupe el ancho del main */
-  }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-  .section-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px; /* Bordes más suaves para un look moderno */
-    padding: 40px 32px; /* Más padding interno para que se vea premium */
-    text-decoration: none;
-    color: inherit;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  }
+    /* 2. HEADER RECUPERADO */
+    nav {
+      height: 56px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-  .section-card:hover {
-    border-color: var(--accent);
-    transform: translateY(-8px); /* Salto más pronunciado */
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-  }
+    .nav-logo {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
 
-  .card-header {
-    display: flex;
-    flex-direction: column; /* Icono arriba del título para llenar más espacio vertical */
-    align-items: flex-start;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
+    /* 3. LAYOUT CENTRADO Y BALANCEADO */
+    main {
+      max-width: 860px;
+      width: 100%;
+      margin: auto; /* Centrado vertical y horizontal */
+      padding: 40px 24px;
+    }
 
-  .icon-box {
-    width: 48px;
-    height: 48px;
-    background: #f0f4ff;
-    color: var(--accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 12px;
-  }
+    .hero {
+      text-align: center;
+      margin-bottom: 56px;
+    }
 
-  .section-title {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--text-primary);
-  }
+    .hero-title {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
 
-  .section-desc {
-    font-size: 15px;
-    line-height: 1.6;
-    color: var(--text-secondary);
-    margin-bottom: 20px;
-  }
+    .hero-sub {
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
 
-  /* El detalle que "cierra" el diseño: */
-  .card-footer {
-    margin-top: auto;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--accent);
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-</style>
+    /* 4. GRID DE TARJETAS */
+    .sections-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+    }
 
-<main>
-  <header class="hero">
-    <h1 class="hero-title">Gestión de Proyectos</h1>
-    <p class="hero-sub">Dashboard central de métricas y control operativo.</p>
-  </header>
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 32px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+    }
 
-  <div class="sections-grid">
-    <a href="#" class="section-card">
-      <div class="card-header">
+    .section-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08);
+    }
+
+    /* 5. ELEMENTOS INTERNOS DE LA CARD */
+    .icon-box {
+      width: 48px;
+      height: 48px;
+      background: #eff6ff;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-desc {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .card-footer {
+      margin-top: auto;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 640px) {
+      .sections-grid { grid-template-columns: 1fr; }
+      main { padding: 40px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <span class="nav-logo">PMO Dashboard</span>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <h1 class="hero-title">Gestión de Proyectos</h1>
+      <p class="hero-sub">Seleccione un área para explorar los reportes detallados.</p>
+    </header>
+
+    <div class="sections-grid">
+      <!-- Tarjeta 1 -->
+      <a href="reportes/mensual/index.html" class="section-card">
         <div class="icon-box">
-          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
         </div>
         <h2 class="section-title">Métricas Mensuales</h2>
-      </div>
-      <p class="section-desc">Performance operativa y niveles de servicio del Service Desk.</p>
-      <div class="card-footer">Ver reporte <span>→</span></div>
-    </a>
+        <p class="section-desc">Performance operativa y niveles de servicio del Service Desk.</p>
+        <div class="card-footer">Ver reporte <span>→</span></div>
+      </a>
 
-    <a href="#" class="section-card">
-      <div class="card-header">
+      <!-- Tarjeta 2 -->
+      <a href="crs/index.html" class="section-card">
         <div class="icon-box">
-          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m21 3-9 9m9-9h-9m9 0v9M3 21l9-9m-9 9h9m-9 0v-9"/></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M8 21H3v-5"></path><path d="M21 3 3 21"></path></svg>
         </div>
         <h2 class="section-title">Change Requests</h2>
-      </div>
-      <p class="section-desc">Control de desviaciones y estimaciones por rol en cambios.</p>
-      <div class="card-footer">Ver reporte <span>→</span></div>
-    </a>
-  </div>
-</main>
+        <p class="section-desc">Control de desviaciones y estimaciones por rol en cambios.</p>
+        <div class="card-footer">Ver reporte <span>→</span></div>
+      </a>
+    </div>
+  </main>
+
+</body>
+</html>
