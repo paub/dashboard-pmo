@@ -1,1 +1,379 @@
-hola
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>CR Analytics</title>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f5f4f0;
+      --surface: #ffffff;
+
+      --border: rgba(0,0,0,0.08);
+      --border-strong: rgba(0,0,0,0.16);
+
+      --text-primary: #1a1a18;
+      --text-secondary: #5f5e5a;
+      --text-tertiary: #9a9890;
+
+      --red-bg: #FCEBEB;
+      --red-text: #A32D2D;
+      --red-border: #E24B4A;
+
+      --green-bg: #EAF3DE;
+      --green-text: #3B6D11;
+      --green-border: #639922;
+
+      --shadow:
+        0 1px 2px rgba(0,0,0,0.03),
+        0 6px 24px rgba(0,0,0,0.04);
+
+      --radius: 14px;
+
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --mono: 'SF Mono', monospace;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    nav {
+      height: 52px;
+      background: var(--surface);
+
+      border-bottom: 0.5px solid var(--border);
+
+      display: flex;
+      align-items: center;
+      gap: 14px;
+
+      padding: 0 32px;
+    }
+
+    .nav-logo {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav-sep {
+      width: 1px;
+      height: 14px;
+      background: var(--border-strong);
+    }
+
+    .nav-section {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    main {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 36px 24px 64px;
+    }
+
+    .page-header {
+      margin-bottom: 28px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 650;
+
+      letter-spacing: -0.03em;
+
+      margin-bottom: 10px;
+    }
+
+    .page-sub {
+      max-width: 760px;
+
+      font-size: 14px;
+      line-height: 1.7;
+
+      color: var(--text-secondary);
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .cr-card {
+      background: var(--surface);
+
+      border: 0.5px solid var(--border);
+      border-left: 3px solid var(--red-border);
+
+      border-radius: var(--radius);
+
+      padding: 18px;
+
+      box-shadow: var(--shadow);
+
+      text-decoration: none;
+      color: inherit;
+
+      transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease,
+        border-color 0.15s ease;
+    }
+
+    .cr-card:hover {
+      transform: translateY(-2px);
+
+      border-color: var(--border-strong);
+
+      box-shadow:
+        0 2px 6px rgba(0,0,0,0.04),
+        0 10px 28px rgba(0,0,0,0.06);
+    }
+
+    .cr-card.under {
+      border-left-color: var(--green-border);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+
+      margin-bottom: 14px;
+    }
+
+    .card-id {
+      font-size: 11px;
+      font-family: var(--mono);
+
+      color: var(--text-tertiary);
+
+      letter-spacing: 0.04em;
+    }
+
+    .card-badge {
+      margin-left: auto;
+
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+
+      font-size: 11px;
+      font-weight: 600;
+
+      padding: 4px 10px;
+
+      border-radius: 999px;
+    }
+
+    .badge-over {
+      background: var(--red-bg);
+      color: var(--red-text);
+    }
+
+    .badge-under {
+      background: var(--green-bg);
+      color: var(--green-text);
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+
+      line-height: 1.5;
+
+      margin-bottom: 16px;
+    }
+
+    .card-sep {
+      height: 1px;
+      background: var(--border);
+
+      margin-bottom: 14px;
+    }
+
+    .card-metrics {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .metric {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .metric-val {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .metric-val.over {
+      color: var(--red-text);
+    }
+
+    .metric-lbl {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    .metric-divider {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+    }
+
+    .delta-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+
+      padding: 5px 10px;
+
+      border-radius: 999px;
+
+      font-size: 12px;
+      font-weight: 600;
+
+      white-space: nowrap;
+    }
+
+    .delta-over {
+      background: var(--red-bg);
+      color: var(--red-text);
+    }
+
+    .delta-under {
+      background: var(--green-bg);
+      color: var(--green-text);
+    }
+
+    @media (max-width: 640px) {
+      nav {
+        padding: 0 18px;
+      }
+
+      main {
+        padding: 28px 18px 48px;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <nav>
+
+    <span class="nav-logo">
+      PMO Analytics
+    </span>
+
+    <div class="nav-sep"></div>
+
+    <span class="nav-section">
+      CR Analytics
+    </span>
+
+  </nav>
+
+  <main>
+
+    <div class="page-header">
+
+      <div class="page-title">
+        CR Analytics
+      </div>
+
+      <div class="page-sub">
+        Histórico de análisis de esfuerzo por Change Request.
+        Incluye comparativa entre estimación y ejecución real,
+        breakdown operativo por rol y métricas de desvío.
+      </div>
+
+    </div>
+
+    <div class="cards-grid">
+
+      <a class="cr-card" href="xtpsd-2308.html">
+
+        <div class="card-header">
+
+          <span class="card-id">
+            XTPSD-2308
+          </span>
+
+          <span class="card-badge badge-over">
+            ↑ Excedido
+          </span>
+
+        </div>
+
+        <div class="card-title">
+          WB — Configuración B2C por empresa + Subdominio B2C Travelclub
+        </div>
+
+        <div class="card-sep"></div>
+
+        <div class="card-metrics">
+
+          <div class="metric">
+            <span class="metric-val over">
+              83.5 hs
+            </span>
+
+            <span class="metric-lbl">
+              Real
+            </span>
+          </div>
+
+          <div class="metric-divider"></div>
+
+          <div class="metric">
+            <span class="metric-val">
+              72.9 hs
+            </span>
+
+            <span class="metric-lbl">
+              Estimado
+            </span>
+          </div>
+
+          <div class="metric-divider"></div>
+
+          <span class="delta-chip delta-over">
+            ↑ +14.5%
+          </span>
+
+        </div>
+
+      </a>
+
+    </div>
+
+  </main>
+
+</body>
+
+</html>
