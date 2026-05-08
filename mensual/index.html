@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Métricas Mensuales · PMO Dashboard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/css/shared.css">
+
+  <style>
+    /* MENSUAL INDEX — estilos específicos de esta página */
+
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 24px 64px;
+    }
+
+    .page-header { margin-bottom: 32px; }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .empty-state {
+      margin-top: 64px;
+      text-align: center;
+      color: var(--text-tertiary);
+    }
+
+    .empty-state svg {
+      margin-bottom: 16px;
+      opacity: 0.4;
+    }
+
+    .empty-state p {
+      font-size: 15px;
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <span class="nav-logo">PMO Dashboard</span>
+    <div class="nav-sep"></div>
+    <span class="nav-section">Métricas Mensuales</span>
+  </nav>
+
+  <main>
+    <div class="breadcrumb">
+      <a href="../index.html">Inicio</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">Métricas Mensuales</span>
+    </div>
+
+    <div class="page-header">
+      <h1 class="page-title">Métricas Mensuales</h1>
+    </div>
+
+    <div class="empty-state">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="20" x2="18" y2="10"></line>
+        <line x1="12" y1="20" x2="12" y2="4"></line>
+        <line x1="6" y1="20" x2="6" y2="14"></line>
+      </svg>
+      <p>Los reportes mensuales estarán disponibles próximamente.</p>
+    </div>
+  </main>
+</body>
+</html>

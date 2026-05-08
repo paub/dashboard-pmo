@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Change Requests · PMO Dashboard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../assets/css/shared.css">
+
+  <style>
+    /* CRS INDEX — estilos específicos de esta página */
+
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 24px 64px;
+    }
+
+    .page-header { margin-bottom: 32px; }
+
+    .page-title {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    /* GRID */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    /* CR CARD */
+    .cr-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--red-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .cr-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+      border-color: var(--border-strong);
+      border-left-color: var(--red-text);
+    }
+
+    .cr-card.under { border-left-color: var(--green-border); }
+    .cr-card.under:hover { border-left-color: var(--green-text); }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .card-id {
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--text-tertiary);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .card-badge {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .badge-over  { background: var(--red-bg);   color: var(--red-text); }
+    .badge-under { background: var(--green-bg); color: var(--green-text); }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      min-height: 42px;
+    }
+
+    .card-sep {
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 16px;
+    }
+
+    .card-metrics {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .metric { display: flex; flex-direction: column; }
+    .metric-val { font-size: 16px; font-weight: 700; }
+    .metric-val.over { color: var(--red-text); }
+    .metric-lbl { font-size: 11px; color: var(--text-tertiary); font-weight: 500; }
+
+    .metric-divider { width: 1px; height: 24px; background: var(--border); }
+
+    .delta-chip {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: var(--mono);
+    }
+
+    .delta-over  { background: var(--red-bg);   color: var(--red-text); }
+    .delta-under { background: var(--green-bg); color: var(--green-text); }
+
+    /* EMPTY CARD */
+    .card-empty {
+      min-height: 160px;
+      border: 2px dashed var(--border-strong);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-tertiary);
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    @media (max-width: 640px) {
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <span class="nav-logo">PMO Dashboard</span>
+    <div class="nav-sep"></div>
+    <span class="nav-section">Change Requests</span>
+  </nav>
+
+  <main>
+    <div class="breadcrumb">
+      <a href="../index.html">Inicio</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">Change Requests</span>
+    </div>
+
+    <div class="page-header">
+      <h1 class="page-title">Change Requests</h1>
+    </div>
+
+    <div class="cards-grid">
+      <a class="cr-card" href="xtpsd-2308.html">
+        <div class="card-header">
+          <span class="card-id">XTPSD-2308</span>
+          <span class="card-badge badge-over">↑ Excedido</span>
+        </div>
+        <div class="card-title">WB — Configuración B2C por empresa + Subdominio B2C Travelclub</div>
+        <div class="card-sep"></div>
+        <div class="card-metrics">
+          <div class="metric">
+            <span class="metric-val over">83.5 hs</span>
+            <span class="metric-lbl">Real</span>
+          </div>
+          <div class="metric-divider"></div>
+          <div class="metric">
+            <span class="metric-val">72.9 hs</span>
+            <span class="metric-lbl">Estimado</span>
+          </div>
+          <div class="metric-divider"></div>
+          <span class="delta-chip delta-over">+10.6h</span>
+        </div>
+      </a>
+
+      <div class="card-empty">Próximo CR</div>
+      <div class="card-empty">Próximo CR</div>
+    </div>
+  </main>
+</body>
+</html>

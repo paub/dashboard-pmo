@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XTPSD-2308 · Change Requests · PMO Dashboard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
+  <link rel="stylesheet" href="../assets/css/shared.css">
+
+  <style>
+    /* XTPSD-2308 — estilos específicos de esta página */
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px 72px;
+    }
+
+    /* HEADER */
+    .page-header { margin-bottom: 32px; }
+
+    .cr-id {
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--mono);
+      color: var(--text-tertiary);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .page-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .header-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      background: #f1f5f9;
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .chip.over {
+      background: var(--red-bg);
+      border-color: var(--red-border);
+      color: var(--red-text);
+    }
+
+    /* KPI GRID */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .kpi-card.highlight {
+      border-left: 4px solid var(--red-text);
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .kpi-value span {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-tertiary);
+    }
+
+    .kpi-value.over { color: var(--red-text); }
+
+    /* SECTION */
+    .section { margin-top: 40px; }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-tertiary);
+      margin-bottom: 16px;
+    }
+
+    /* TABLE */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      background: #f8fafc;
+      padding: 12px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-align: right;
+      border-bottom: 1px solid var(--border);
+    }
+
+    thead th:first-child { text-align: left; }
+
+    tbody td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      text-align: right;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    tbody td:first-child {
+      text-align: left;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+
+    .val-over  { color: var(--red-text);   font-weight: 600; }
+    .val-under { color: var(--green-text); font-weight: 600; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge-over    { background: var(--red-bg);   color: var(--red-text); }
+    .badge-under   { background: var(--green-bg); color: var(--green-text); }
+    .badge-neutral { background: var(--amber-bg); color: var(--amber-text); }
+
+    .total-row td {
+      background: #f8fafc;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* CHARTS */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .chart-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .chart-wrap { height: 280px; }
+
+    @media (max-width: 900px) {
+      .kpi-grid    { grid-template-columns: repeat(2, 1fr); }
+      .charts-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .kpi-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <span class="nav-logo">PMO Dashboard</span>
+    <div class="nav-sep"></div>
+    <span class="nav-section">Change Requests</span>
+    <div class="nav-sep"></div>
+    <span class="nav-section">XTPSD-2308</span>
+  </nav>
+
+  <main>
+    <div class="breadcrumb">
+      <a href="../index.html">Inicio</a>
+      <span class="breadcrumb-sep">/</span>
+      <a href="index.html">Change Requests</a>
+      <span class="breadcrumb-sep">/</span>
+      <span class="breadcrumb-current">XTPSD-2308</span>
+    </div>
+
+    <div class="page-header">
+      <div class="cr-id">XTPSD-2308</div>
+      <h1 class="page-title">WB — Configuración B2C por empresa + Subdominio B2C Travelclub</h1>
+      <div class="header-chips">
+        <span class="chip">Cliente Wellbeds</span>
+        <span class="chip over">+14.5% desvío</span>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">Horas estimadas</div>
+        <div class="kpi-value">72.9 <span>hs</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Horas reales</div>
+        <div class="kpi-value">83.5 <span>hs</span></div>
+      </div>
+      <div class="kpi-card highlight">
+        <div class="kpi-label">Desvío total</div>
+        <div class="kpi-value over">+10.6 <span>hs</span></div>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="section-title">Desglose por rol</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Rol</th>
+              <th>Estimado</th>
+              <th>Real</th>
+              <th>Desvío</th>
+              <th>Desvío %</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Backend</td>
+              <td>32.0 hs</td>
+              <td>48.0 hs</td>
+              <td class="val-over">+16.0 hs</td>
+              <td class="val-over">+50.0%</td>
+              <td><span class="badge badge-over">Excedido</span></td>
+            </tr>
+            <tr>
+              <td>Frontend</td>
+              <td>16.0 hs</td>
+              <td>23.0 hs</td>
+              <td class="val-over">+7.0 hs</td>
+              <td class="val-over">+43.8%</td>
+              <td><span class="badge badge-over">Excedido</span></td>
+            </tr>
+            <tr>
+              <td>UX/UI</td>
+              <td>2.4 hs</td>
+              <td>0.0 hs</td>
+              <td class="val-under">−2.4 hs</td>
+              <td class="val-under">−100%</td>
+              <td><span class="badge badge-under">Bajo</span></td>
+            </tr>
+            <tr>
+              <td>QA</td>
+              <td>4.5 hs</td>
+              <td>0.0 hs</td>
+              <td class="val-under">−4.5 hs</td>
+              <td class="val-under">−100%</td>
+              <td><span class="badge badge-under">Bajo</span></td>
+            </tr>
+            <tr>
+              <td>Automation</td>
+              <td>2.0 hs</td>
+              <td>1.0 hs</td>
+              <td class="val-under">−1.0 hs</td>
+              <td class="val-under">−50%</td>
+              <td><span class="badge badge-under">Bajo</span></td>
+            </tr>
+            <tr>
+              <td>DevOps</td>
+              <td>11.0 hs</td>
+              <td>2.0 hs</td>
+              <td class="val-under">−9.0 hs</td>
+              <td class="val-under">−81.8%</td>
+              <td><span class="badge badge-under">Bajo</span></td>
+            </tr>
+            <tr>
+              <td>Análisis</td>
+              <td>3.1 hs</td>
+              <td>8.0 hs</td>
+              <td class="val-over">+4.9 hs</td>
+              <td class="val-over">+158.1%</td>
+              <td><span class="badge badge-over">Excedido</span></td>
+            </tr>
+            <tr>
+              <td>Arquitectura</td>
+              <td>1.9 hs</td>
+              <td>1.5 hs</td>
+              <td class="val-under">−0.4 hs</td>
+              <td class="val-under">−21.1%</td>
+              <td><span class="badge badge-neutral">Leve</span></td>
+            </tr>
+            <tr class="total-row">
+              <td>TOTAL</td>
+              <td>72.9 hs</td>
+              <td>83.5 hs</td>
+              <td class="val-over">+10.6 hs</td>
+              <td class="val-over">+14.5%</td>
+              <td><span class="badge badge-over">Excedido</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">Visualización</div>
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-title">Estimado vs Real por rol</div>
+          <div class="chart-wrap">
+            <canvas id="chart1"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Desvío absoluto por rol</div>
+          <div class="chart-wrap">
+            <canvas id="chart2"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const roles     = ['Backend', 'Frontend', 'UX/UI', 'QA', 'Automation', 'DevOps', 'Análisis', 'Arquitectura'];
+    const estimated = [32, 16, 2.4, 4.5, 2, 11, 3.1, 1.9];
+    const real      = [48, 23, 0, 0, 1, 2, 8, 1.5];
+    const variance  = real.map((r, i) => +(r - estimated[i]).toFixed(1));
+
+    // Tokens extraídos del CSS para consistencia en los gráficos
+    const cs = getComputedStyle(document.documentElement);
+    const colorAccent   = cs.getPropertyValue('--accent').trim()       || '#2563eb';
+    const colorBorder   = cs.getPropertyValue('--border').trim()        || 'rgba(0,0,0,0.08)';
+    const colorRedText  = cs.getPropertyValue('--red-text').trim()      || '#b91c1c';
+    const colorGreenText= cs.getPropertyValue('--green-text').trim()    || '#15803d';
+    const colorSecondary= cs.getPropertyValue('--text-secondary').trim()|| '#4b5563';
+
+    Chart.defaults.font.family = "'Inter', sans-serif";
+    Chart.defaults.font.size   = 12;
+    Chart.defaults.color       = colorSecondary;
+
+    const gridColor = 'rgba(0,0,0,0.05)';
+
+    new Chart(document.getElementById('chart1'), {
+      type: 'bar',
+      data: {
+        labels: roles,
+        datasets: [
+          { label: 'Estimado', data: estimated, backgroundColor: 'rgba(0,0,0,0.08)', borderRadius: 4 },
+          { label: 'Real',     data: real,      backgroundColor: colorAccent,        borderRadius: 4 }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } },
+        scales: {
+          y: { beginAtZero: true, grid: { color: gridColor } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('chart2'), {
+      type: 'bar',
+      data: {
+        labels: roles,
+        datasets: [{
+          label: 'Desvío (hs)',
+          data: variance,
+          backgroundColor: variance.map(v => v > 0 ? colorRedText : colorGreenText),
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { grid: { color: gridColor } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
